@@ -1,4 +1,5 @@
 import React from "react";
+import FirebaseService from "../../service/FirebaseService";
 import { StyleSheet, View, TextField, Button } from "react-native";
 
 const AddScreen = () => {

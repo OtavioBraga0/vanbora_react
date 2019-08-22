@@ -1,6 +1,6 @@
 import React from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {FirebaseService} from './services/FirebaseService.js';
+import {ScrollView, StyleSheet, Text, View, Button} from 'react-native';
+import FirebaseService from "../../service/FirebaseService";
 
 const styles = StyleSheet.create({
     margin10: {margin: 10},
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 
 });
 
-export default class HomeScreen extends React.Component {
+export default class HomeScreen extends React.Component{
     state = {
         dataList: null,
     };
@@ -29,36 +29,45 @@ export default class HomeScreen extends React.Component {
     };
 
     render() {
+        const {navigate} = this.props.navigation;
         const {dataList} = this.state;
 
         return (
-            <ScrollView style={styles.margin10}>
-                <View style={styles.header}><Text>React-Native App</Text></View>
-                <View style={styles.fullWidth}>
-                    {
-                        dataList && dataList.map(
-                            (item, index) => {
-                                return <View style={[styles.margin10, styles.item]} key={index} >
-                                    <View style={{padding:10}}>
-                                    <Text style={styles.listItemHeader}> Temperatura </Text>
-                                    <Text style={styles.listItemText}> {item.temperatura} </Text>
+            <View>
+                <Button
+                  onPress={() => navigate('Add')}
+                  title="Adicionar"
+                  color="#841584"
+                  accessibilityLabel="Adicionar "
+                />
+                <ScrollView style={styles.margin10}>
+                    <View style={styles.header}><Text>React-Native App</Text></View>
+                    <View style={styles.fullWidth}>
+                        {
+                            dataList && dataList.map(
+                                (item, index) => {
+                                    return <View style={[styles.margin10, styles.item]} key={index} >
+                                        <View style={{padding:10}}>
+                                        <Text style={styles.listItemHeader}> Temperatura </Text>
+                                        <Text style={styles.listItemText}> {item.temperatura} </Text>
 
-                                    <Text style={styles.listItemHeader}> Data </Text>
-                                    <Text style={styles.listItemText}> {item.data} </Text>
+                                        <Text style={styles.listItemHeader}> Data </Text>
+                                        <Text style={styles.listItemText}> {item.data} </Text>
 
-                                    <Text style={styles.listItemHeader}> Umidade </Text>
-                                    <Text style={styles.listItemText}> {item.umidade} </Text>
+                                        <Text style={styles.listItemHeader}> Umidade </Text>
+                                        <Text style={styles.listItemText}> {item.umidade} </Text>
 
-                                    <Text style={styles.listItemHeader}> Cliente </Text>
-                                    <Text style={styles.listItemText}> {item.cliente} </Text>
+                                        <Text style={styles.listItemHeader}> Cliente </Text>
+                                        <Text style={styles.listItemText}> {item.cliente} </Text>
+                                        </View>
                                     </View>
-                                </View>
-                            }
-                        )
-                    }
+                                }
+                            )
+                        }
 
-                </View>
-            </ScrollView>
+                    </View>
+                </ScrollView>
+            </View>
         );
     }
 }
