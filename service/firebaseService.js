@@ -19,7 +19,7 @@ export default class FirebaseService{
 
     static pushData = (node, objToSubmit) => {
         const ref = firebaseDatabase.ref(node).push();
-        const id = firebaseDatabase.ref(node).push().key;
+        const id = ref.key;
         ref.set(objToSubmit);
         return id;
     };
@@ -28,4 +28,20 @@ export default class FirebaseService{
         return firebaseDatabase.ref(node + '/' + id).remove();
     };
 
+    static getData = (nodePath, callback, key) => {
+
+        let query = firebaseDatabase.ref(nodePath);
+        query.orderByKey()
+        query.equalTo(key)
+        query.on('value', dataSnapshot => {
+            let items = [];
+            dataSnapshot.forEach(childSnapshot => {
+                let item = childSnapshot.val();
+                item['key'] = childSnapshot.key;
+                items.push(item);
+            });
+            callback(items);
+        });
+        return query;
+    };
 }

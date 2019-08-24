@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, StyleSheet, Text, View, Button} from 'react-native';
+import {ScrollView, StyleSheet, Text, View, Button, AsyncStorage} from 'react-native';
 import FirebaseService from "../../service/FirebaseService";
 
 const styles = StyleSheet.create({
@@ -24,43 +24,51 @@ export default class HomeScreen extends React.Component{
         dataList: null,
     };
 
-    componentDidMount() {
-        FirebaseService.getDataList('leituras', dataIn => this.setState({dataList: dataIn}), 10);
-    };
+    navigation = this.props.navigation;
 
+
+    async componentDidMount() {
+        const key = await AsyncStorage.getItem("@Usuario:key")
+        
+        FirebaseService.getData('usuario', dataIn => {
+            let nav;
+            if(dataIn.length > 0) {
+                if (dataIn[0].tipo == 'aluno') {
+                    nav = "HomeAluno";
+                } else {
+                    nav = "HomeMotorista";                    
+                }
+            } else {
+                nav = "Cadastro";
+            }
+            this.navigation.replace(nav)
+        }, key);
+    };
     render() {
-        const {navigate} = this.props.navigation;
         const {dataList} = this.state;
 
         return (
             <View>
-                <Button
-                  onPress={() => navigate('Add')}
-                  title="Adicionar"
-                  color="#841584"
-                  accessibilityLabel="Adicionar "
-                />
                 <ScrollView style={styles.margin10}>
                     <View style={styles.header}><Text>React-Native App</Text></View>
                     <View style={styles.fullWidth}>
                         {
                             dataList && dataList.map(
                                 (item, index) => {
-                                    return <View style={[styles.margin10, styles.item]} key={index} >
-                                        <View style={{padding:10}}>
-                                        <Text style={styles.listItemHeader}> Temperatura </Text>
-                                        <Text style={styles.listItemText}> {item.temperatura} </Text>
-
-                                        <Text style={styles.listItemHeader}> Data </Text>
-                                        <Text style={styles.listItemText}> {item.data} </Text>
-
-                                        <Text style={styles.listItemHeader}> Umidade </Text>
-                                        <Text style={styles.listItemText}> {item.umidade} </Text>
-
-                                        <Text style={styles.listItemHeader}> Cliente </Text>
-                                        <Text style={styles.listItemText}> {item.cliente} </Text>
+                                    return (
+                                        <View style={[styles.margin10, styles.item]} key={index} >
+                                            <View style={{padding:10}}>
+                                                <Text style={styles.listItemHeader}> Nome </Text>
+                                                <Text style={styles.listItemText}> {item.nome} </Text>
+                                                
+                                                <Text style={styles.listItemHeader}> Telefone </Text>
+                                                <Text style={styles.listItemText}> {item.telefone} </Text>
+                                                
+                                                <Text style={styles.listItemHeader}> Tipo </Text>
+                                                <Text style={styles.listItemText}> {item.tipo} </Text>
+                                            </View>
                                         </View>
-                                    </View>
+                                    );
                                 }
                             )
                         }

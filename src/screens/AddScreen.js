@@ -1,62 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import FirebaseService from "../../service/FirebaseService";
-import { StyleSheet, View, TextField, Button } from "react-native";
+import { StyleSheet, View, Button, TextInput, Text } from "react-native";
 
 const AddScreen = () => {
-    submit = (event) => {
-        event.preventDefault();
+    const [temperatura, setTemperatura] = useState("");
+    const [umidade, setUmidade] = useState("");
+    const [data, setData] = useState("");
+    const [cliente, setCliente] = useState("");
 
-        const {temperatura} = this;
-        const {umidade} = this;
-        const {data} = this;
-        const {cliente} = this;
-
-        const newid = FirebaseService.pushData('leituras', {
+    submit = () => {
+        const newid = FirebaseService.pushData('van', {
             temperatura,
             umidade,
             data,
             cliente
         });
-
-        this.props.history.push(urls.data.path);
-
     };
-
     return(
         <View>
-            <form onSubmit={this.submit}>
-                <TextField className="input-field"
-                    type="text"
-                    defaultValue={''}
-                    label="Temperatura"
-                    required
-                    onChange={e => this.temperatura = e.target.value}/>
-                <TextField className="input-field"
-                    type="text"
-                    label="Humidity"
-                    defaultValue={''}
-                    required
-                    onChange={e => this.umidade = e.target.value}/>
-                <TextField className="input-field"
-                    type="text"
-                    label="Date"
-                    defaultValue={''}
-                    required
-                    onChange={e => this.data = e.target.value}/>
-                <TextField className="input-field"
-                    type="email"
-                    label="Client"
-                    defaultValue={''}
-                    required
-                    onChange={e => this.cliente = e.target.value}/>
-                <Button type="submit" style={{marginTop: '20px', display: 'inline-block'}}>
-                    Add
-                </Button>
-            </form>
+            <TextInput
+                style={styles.input}
+                value={temperatura}
+                required
+                onChangeText={(value) => setTemperatura(value)}/>
+            <TextInput
+                style={styles.input}
+                value={umidade}
+                required
+                onChangeText={(value) => setUmidade(value)}/>
+            <TextInput
+                style={styles.input}
+                value={data}
+                required
+                onChangeText={(value) => setData(value)}/>
+            <TextInput
+                style={styles.input}
+                value={cliente}
+                required
+                onChangeText={(value) => setCliente(value)}/>
+            <Button 
+                type="button"
+                title="Add"
+                onPress={() => submit()}
+                style={{marginTop: '20px', display: 'inline-block'}} />
         </View>
     );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    input: {
+        margin: 10,
+        borderWidth: 2,
+        borderStyle: "solid",
+        borderColor: "black",
+        padding: 5,
+    }
+});
 
 export default AddScreen;
