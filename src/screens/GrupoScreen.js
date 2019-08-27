@@ -1,30 +1,34 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Button, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
+import React, {Component} from "react";
+import {StyleSheet, View, Text, ScrollView, Button} from "react-native";
 import FirebaseService from "../../service/FirebaseService";
 
-export default class HomeMotoristaScreen extends Component {
+export default class ListagemAlunosScreen extends Component {
     state = {
         dataList: null,
-    };
+    }
 
     static navigationOptions = {
-        title: 'Home - Motorista',
+        title: "Grupo",
     };
 
-    async componentDidMount() {
-        const key = await AsyncStorage.getItem("@Usuario:key");
-        FirebaseService.getDataWithChild('grupo', 'motoristaId', key, dataIn => this.setState({dataList: dataIn}));
+
+    componentDidMount() {
+        FirebaseService.getDataWithChild('grupo-aluno', 'grupoId', this.props.navigation.getParam("grupoId"), dataIn => this.setState({dataList: dataIn}));
+        
+        this.state.dataList.map((userData) => {
+            console.log(userData);
+        });
     };
 
-    render() {
+    render(){
         const {dataList} = this.state;
         const {navigate} = this.props.navigation;
-
+        
         return(
             <View>
                 <Button
-                    title="Criar Grupo"
-                    onPress={() => navigate("CadastroGrupo")}
+                    title="Adicionar Aluno"
+                    onPress={() => navigate("CadastroAluno", {grupoId: this.props.navigation.getParam("grupoId")})}
                 />
                 <ScrollView>
                     <View style={styles.fullWidth}>
@@ -33,15 +37,13 @@ export default class HomeMotoristaScreen extends Component {
                                 (item, index) => {
                                     return (
                                         <View style={[styles.margin10, styles.item]} key={index}>
-                                            <TouchableOpacity onPress={() => navigate("Grupo", {grupoId: item.key})}>
-                                                <View style={{padding:10}}>
-                                                    <Text style={styles.listItemHeader}> Nome </Text>
-                                                    <Text style={styles.listItemText}> {item.nome} </Text>
+                                            <View style={{padding:10}}>
+                                                <Text style={styles.listItemHeader}> Nome </Text>
+                                                <Text style={styles.listItemText}> {item.nome} </Text>
 
-                                                    <Text style={styles.listItemHeader}> Período </Text>
-                                                    <Text style={styles.listItemText}> {item.periodo} </Text>
-                                                </View>
-                                            </TouchableOpacity>
+                                                <Text style={styles.listItemHeader}> Período </Text>
+                                                <Text style={styles.listItemText}> {item.periodo} </Text>
+                                            </View>
                                         </View>
                                     );
                                 }
@@ -52,6 +54,7 @@ export default class HomeMotoristaScreen extends Component {
                 </ScrollView>
             </View>
         );
+
     }
 }
 

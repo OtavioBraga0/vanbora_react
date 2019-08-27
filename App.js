@@ -4,6 +4,9 @@ import CadastroScreen from './src/screens/CadastroScreen';
 import HomeAlunoScreen from './src/screens/HomeAlunoScreen';
 import HomeMotoristaScreen from './src/screens/HomeMotoristaScreen';
 import CadastroGrupoScreen from './src/screens/CadastroGrupoScreen';
+import GrupoScreen from './src/screens/GrupoScreen';
+import CadastroAlunoScreen from './src/screens/CadastroAlunoScreen';
+
 
 const navigator = createStackNavigator(
     {
@@ -11,7 +14,9 @@ const navigator = createStackNavigator(
       Cadastro: {screen: CadastroScreen},
       HomeAluno: {screen: HomeAlunoScreen},
       HomeMotorista: {screen: HomeMotoristaScreen},
-      CadastroGrupo: {screen: CadastroGrupoScreen}
+      CadastroGrupo: {screen: CadastroGrupoScreen},
+      Grupo: {screen: GrupoScreen},
+      CadastroAluno: {screen: CadastroAlunoScreen}
     },
     {
       initialRouteName: 'Home',
