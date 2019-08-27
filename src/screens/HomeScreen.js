@@ -26,23 +26,26 @@ export default class HomeScreen extends React.Component{
 
     navigation = this.props.navigation;
 
-
     async componentDidMount() {
         const key = await AsyncStorage.getItem("@Usuario:key")
-        
-        FirebaseService.getData('usuario', dataIn => {
-            let nav;
-            if(dataIn.length > 0) {
-                if (dataIn[0].tipo == 'aluno') {
-                    nav = "HomeAluno";
-                } else {
-                    nav = "HomeMotorista";                    
+              
+        if (key !== null) {
+            FirebaseService.getDataWithKey('usuario', key, dataIn => {
+                let nav = "Cadastro";
+                
+                if(dataIn.length != 0) {
+                    if (dataIn[0].tipo == 'aluno') {
+                        nav = "HomeAluno";
+                    } else if (dataIn[0].tipo == 'motorista') {                        
+                        nav = "HomeMotorista";                    
+                    }
                 }
-            } else {
-                nav = "Cadastro";
-            }
-            this.navigation.replace(nav)
-        }, key);
+                
+                this.navigation.replace(nav)        
+            });
+        } else {
+            this.navigation.replace("Cadastro");
+        } 
     };
     render() {
         const {dataList} = this.state;

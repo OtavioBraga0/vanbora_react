@@ -28,11 +28,26 @@ export default class FirebaseService{
         return firebaseDatabase.ref(node + '/' + id).remove();
     };
 
-    static getData = (nodePath, callback, key) => {
+    static getDataWithKey = (nodePath, key, callback) => {
+        let query = firebaseDatabase.ref(nodePath)
+                    .orderByKey()
+                    .equalTo(key)
+        query.on('value', dataSnapshot => {
+            let items = [];
+            dataSnapshot.forEach(childSnapshot => {
+                let item = childSnapshot.val();
+                item['key'] = childSnapshot.key;
+                items.push(item);
+            });
+            callback(items);
+        });
+        return query;
+    };
 
-        let query = firebaseDatabase.ref(nodePath);
-        query.orderByKey()
-        query.equalTo(key)
+    static getDataWithChild = (nodePath, child, key, callback) => {
+        let query = firebaseDatabase.ref(nodePath)
+                    .orderByChild(child)
+                    .equalTo(key);
         query.on('value', dataSnapshot => {
             let items = [];
             dataSnapshot.forEach(childSnapshot => {
