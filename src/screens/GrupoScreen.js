@@ -4,20 +4,22 @@ import FirebaseService from "../../service/FirebaseService";
 
 export default class ListagemAlunosScreen extends Component {
     state = {
-        dataList: null,
+        dataList: Array(),
     }
 
     static navigationOptions = {
         title: "Grupo",
     };
 
-
     componentDidMount() {
-        FirebaseService.getDataWithChild('grupo-aluno', 'grupoId', this.props.navigation.getParam("grupoId"), dataIn => this.setState({dataList: dataIn}));
-        
-        this.state.dataList.map((userData) => {
-            console.log(userData);
-        });
+        FirebaseService.getDataWithChild('grupo-aluno', 'grupoId', this.props.navigation.getParam("grupoId"), dataIn => {
+            dataIn.forEach(usuario => {                
+                FirebaseService.getDataWithKey(
+                    'usuario', 
+                    usuario.alunoId, 
+                    dataIn => this.setState({...this.state, dataList: dataIn }));
+            });
+        });        
     };
 
     render(){
@@ -40,9 +42,6 @@ export default class ListagemAlunosScreen extends Component {
                                             <View style={{padding:10}}>
                                                 <Text style={styles.listItemHeader}> Nome </Text>
                                                 <Text style={styles.listItemText}> {item.nome} </Text>
-
-                                                <Text style={styles.listItemHeader}> Período </Text>
-                                                <Text style={styles.listItemText}> {item.periodo} </Text>
                                             </View>
                                         </View>
                                     );
