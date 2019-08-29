@@ -1,25 +1,48 @@
 import React, {Component} from "react";
-import {StyleSheet, View, Text, ScrollView, Button} from "react-native";
+import {StyleSheet, View, Text, ScrollView, Button, FlatList} from "react-native";
 import FirebaseService from "../../service/FirebaseService";
 
 export default class ListagemAlunosScreen extends Component {
     state = {
-        dataList: Array(),
+        dataList: null,
     }
 
     static navigationOptions = {
         title: "Grupo",
     };
 
-    componentDidMount() {
+    getUpdateList(){
+        console.log("getUpdateList")
         FirebaseService.getDataWithChild('grupo-aluno', 'grupoId', this.props.navigation.getParam("grupoId"), dataIn => {
             dataIn.forEach(usuario => {                
                 FirebaseService.getDataWithKey(
                     'usuario', 
                     usuario.alunoId, 
-                    dataIn => this.setState({...this.state, dataList: dataIn }));
+                    dataIn => {
+                        this.setState({ dataList: this.state.dataList.concat(dataIn)})
+                    });
             });
-        });        
+        });
+    }
+
+    componentDidMount() {
+        this.setState({dataList: []})
+        FirebaseService.getDataWithChild('grupo-aluno', 'grupoId', this.props.navigation.getParam("grupoId"), dataIn => {
+            console.log("getDataWithChild")
+            dataIn.forEach(usuario => {                
+                FirebaseService.getDataWithKey(
+                    'usuario', 
+                    usuario.alunoId, 
+                    dataIn => {
+                        console.log(this.state.dataList.length);
+                        if(this.state.dataList.length > dataIn.length && this.state.dataList.length > 0){
+                            this.getUpdateList();
+                        } else {
+                            this.setState({ dataList: this.state.dataList.concat(dataIn)})
+                        }
+                    });
+            });
+        });
     };
 
     render(){
@@ -34,21 +57,14 @@ export default class ListagemAlunosScreen extends Component {
                 />
                 <ScrollView>
                     <View style={styles.fullWidth}>
-                        {
-                            dataList && dataList.map(
-                                (item, index) => {
-                                    return (
-                                        <View style={[styles.margin10, styles.item]} key={index}>
-                                            <View style={{padding:10}}>
-                                                <Text style={styles.listItemHeader}> Nome </Text>
-                                                <Text style={styles.listItemText}> {item.nome} </Text>
-                                            </View>
-                                        </View>
-                                    );
-                                }
-                            )
-                        }
-    
+                        <FlatList 
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(usuario) => usuario.key}
+                            data={dataList} 
+                            renderItem={({item}) => {
+                                return <Text style={styles.textStyle}>{item.nome} - {item.key}</Text>
+                            }}
+                        />
                     </View>
                 </ScrollView>
             </View>
