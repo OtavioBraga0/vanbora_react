@@ -24,6 +24,10 @@ export default class FirebaseService{
         return id;
     };
 
+    static updateRelationship = (id, node, objId, obj) => {
+        return firebaseDatabase.ref(node + '/' + id + "/" + objId).set({...obj});
+    };
+
     static remove = (id, node) => {
         return firebaseDatabase.ref(node + '/' + id).remove();
     };
