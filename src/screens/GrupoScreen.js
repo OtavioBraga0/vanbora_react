@@ -4,42 +4,40 @@ import FirebaseService from "../../service/FirebaseService";
 
 export default class ListagemAlunosScreen extends Component {
     state = {
-        dataList: null,
+        dataList: [],
     }
 
     static navigationOptions = {
         title: "Grupo",
     };
 
-    getUpdateList(){
-        console.log("getUpdateList")
-        FirebaseService.getDataWithChild('grupo-aluno', 'grupoId', this.props.navigation.getParam("grupoId"), dataIn => {
-            dataIn.forEach(usuario => {                
-                FirebaseService.getDataWithKey(
-                    'usuario', 
-                    usuario.alunoId, 
-                    dataIn => {
-                        this.setState({ dataList: this.state.dataList.concat(dataIn)})
-                    });
-            });
-        });
+    verifyDataList(dataIn){
+        let dataList = this.state.dataList;
+        let exist = 0;
+        dataList[0].forEach((element, index) => {
+            console.log(index)
+            if(dataIn[0].key == element.key){
+                exist += 1;
+            }
+        })
+
+        if(exist == 0) {
+            dataList.push(dataIn);
+            this.setState({dataList: dataList})
+        }
+        
+        console.log(dataList[0])
+
     }
 
     componentDidMount() {
-        this.setState({dataList: []})
         FirebaseService.getDataWithChild('grupo-aluno', 'grupoId', this.props.navigation.getParam("grupoId"), dataIn => {
-            console.log("getDataWithChild")
             dataIn.forEach(usuario => {                
                 FirebaseService.getDataWithKey(
                     'usuario', 
                     usuario.alunoId, 
                     dataIn => {
-                        console.log(this.state.dataList.length);
-                        if(this.state.dataList.length > dataIn.length && this.state.dataList.length > 0){
-                            this.getUpdateList();
-                        } else {
-                            this.setState({ dataList: this.state.dataList.concat(dataIn)})
-                        }
+                        this.verifyDataList(dataIn);
                     });
             });
         });
@@ -57,14 +55,23 @@ export default class ListagemAlunosScreen extends Component {
                 />
                 <ScrollView>
                     <View style={styles.fullWidth}>
-                        <FlatList 
-                            showsHorizontalScrollIndicator={false}
-                            keyExtractor={(usuario) => usuario.key}
-                            data={dataList} 
-                            renderItem={({item}) => {
-                                return <Text style={styles.textStyle}>{item.nome} - {item.key}</Text>
-                            }}
-                        />
+                        {
+                            dataList && dataList.map(
+                                (item, index) => {
+                                    return (
+                                        <View style={[styles.margin10, styles.item]} key={index}>
+                                            <View style={{padding:10}}>
+                                                <Text style={styles.listItemHeader}> Nome </Text>
+                                                <Text style={styles.listItemText}> {item.nome} </Text>
+
+                                                <Text style={styles.listItemHeader}> Key </Text>
+                                                <Text style={styles.listItemText}> {item.key} </Text>
+                                            </View>
+                                        </View>
+                                    );
+                                }
+                            )
+                        }
                     </View>
                 </ScrollView>
             </View>

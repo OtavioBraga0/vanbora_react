@@ -24,12 +24,22 @@ export default class FirebaseService{
         return id;
     };
 
-    static updateRelationship = (id, node, objId, obj) => {
-        return firebaseDatabase.ref(node + '/' + id + "/" + objId).set({...obj});
-    };
-
     static remove = (id, node) => {
         return firebaseDatabase.ref(node + '/' + id).remove();
+    };
+
+    static getDataList = (nodePath, callback) => {
+        let query = firebaseDatabase.ref(nodePath);
+        query.on('value', dataSnapshot => {
+            let items = [];
+            dataSnapshot.forEach(childSnapshot => {
+                let item = childSnapshot.val();
+                item['key'] = childSnapshot.key;
+                items.push(item);
+            });
+            callback(items);
+        });
+        return query;
     };
 
     static getDataWithKey = (nodePath, key, callback) => {

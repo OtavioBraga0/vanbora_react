@@ -23,23 +23,16 @@ export default class CadastroScreen extends Component {
                 try {
                     FirebaseService.getDataWithChild("usuario", "telefone", telefone, dataIn => {
 
-                        var grupoId = this.props.navigation.getParam("grupoId");
+                        FirebaseService.pushData('grupo-aluno', {
+                            alunoId: dataIn[0].key,
+                            grupoId: this.props.navigation.getParam("grupoId"),
+                            presenca: "S"
+                        });
 
-                        const objGrupo = {
-                            [`${grupoId}`] : true,
-                        }
-
-                        const objUsuario = {
-                            [`${dataIn[0].key}`]: true
-                        }
-
-                        FirebaseService.updateRelationship(dataIn[0].key, 'usuario', "grupo", objGrupo);
-                        FirebaseService.updateRelationship(grupoId, 'grupo', "usuario", objUsuario);
-    
                         alert("Aluno adicionado!");
                         goBack();
                     })
-                    
+
                 } catch (error) {
                     alert("Erro de conexão")
                 }
