@@ -28,6 +28,10 @@ export default class FirebaseService{
         return firebaseDatabase.ref(node + '/' + id).remove();
     };
 
+    static updateRelationship(node, obj){
+        firebaseDatabase.ref(node).update({...obj})
+    }
+
     static getDataList = (nodePath, callback) => {
         let query = firebaseDatabase.ref(nodePath);
         query.on('value', dataSnapshot => {

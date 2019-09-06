@@ -21,13 +21,29 @@ export default class CadastroScreen extends Component {
                 alert("Preencha todos os campos!");
             } else {
                 try {
+                    let grupoId = this.props.navigation.getParam("grupoId");
                     FirebaseService.getDataWithChild("usuario", "telefone", telefone, dataIn => {
 
-                        FirebaseService.pushData('grupo-aluno', {
-                            alunoId: dataIn[0].key,
-                            grupoId: this.props.navigation.getParam("grupoId"),
-                            presenca: "S"
-                        });
+                        // FirebaseService.pushData('grupo-aluno', {
+                        //     alunoId: dataIn[0].key,
+                        //     grupoId: this.props.navigation.getParam("grupoId"),
+                        //     presenca: "S"
+                        // });
+
+                        let objUsuario = {
+                            [grupoId]: {
+                                presenca: "S",                                
+                            }, 
+                        }
+
+                        let objGrupo = {
+                            [dataIn[0].key]: {
+                                presenca: "S",
+                            } 
+                        }
+
+                        FirebaseService.updateRelationship(`usuario/${dataIn[0].key}/grupo`, objUsuario)
+                        FirebaseService.updateRelationship(`grupo/${grupoId}/usuario`, objGrupo)
 
                         alert("Aluno adicionado!");
                         goBack();

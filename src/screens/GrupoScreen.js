@@ -9,6 +9,9 @@ export default class ListagemAlunosScreen extends Component {
         dataList: [],
     }
 
+    // this.props.navigation.getParam("grupoId") => É UMA VARIÁVEL PASSADA POR PARÂMETRO DA PÁGINA HOME
+    grupoId = this.props.navigation.getParam("grupoId");
+
     // TROCA TÍTUTLO DO HEADER
     static navigationOptions = {
         title: "Grupo",
@@ -18,8 +21,6 @@ export default class ListagemAlunosScreen extends Component {
     verifyDataList(dataIn){        
         let dataList = this.state.dataList;   
         let exist = 0;   
-        console.log(dataIn);
-        
         if(dataIn.length != 0){
             dataList.forEach((element, index) => {      
                 if(dataIn[0].key == element.key){       
@@ -40,18 +41,17 @@ export default class ListagemAlunosScreen extends Component {
         }
     }
 
-    // this.props.navigation.getparam("grupoId") => É UMA VARIÁVEL PASSADA POR PARÂMETRO DA PÁGINA HOME
 
     // FUNÇÃO CHAMADA NA INICIALIZAÇÃO DA PÁGINA 
     componentDidMount() {
         // LISTA A KEY DE TODOS OS ALUNOS QUE ESTÁ NO GRUPO
-        FirebaseService.getDataWithChild('grupo-aluno', 'grupoId', this.props.navigation.getParam("grupoId"), dataIn => {
-            // PERCORRE TODO O RETORNO DAS KEYs
-            dataIn.forEach(usuario => {        
+        FirebaseService.getDataList(`grupo/${this.grupoId}/usuario` , dataIn => {
+            // PERCORRE TODO O RETORNO DAS KEYs           
+            dataIn.forEach(usuario => {                        
                 // RETORNA OS DADOS DOS ALUNOS BASEADOS NAS KEYs RECOLHIDAS ANTERIORMENTE
                 FirebaseService.getDataWithKey(
                     'usuario',
-                    usuario.alunoId, 
+                    usuario.key, 
                     dataIn => {
                         // CHAMA A FUNÇÃO QUE VALIDA O DATALIST
                         this.verifyDataList(dataIn);
@@ -85,8 +85,8 @@ export default class ListagemAlunosScreen extends Component {
                                                 <Text style={styles.listItemHeader}> Nome </Text>
                                                 <Text style={styles.listItemText}> {item.nome} </Text>
 
-                                                <Text style={styles.listItemHeader}> Key </Text>
-                                                <Text style={styles.listItemText}> {item.key} </Text>
+                                                <Text style={styles.listItemHeader}> Presença </Text>
+                                                <Text style={styles.listItemText}> {item.grupo[this.grupoId].presenca} </Text>
                                             </View>
                                         </View>
                                     );
