@@ -54,7 +54,7 @@ export default class ListagemAlunosScreen extends Component {
                     usuario.key, 
                     dataIn => {
                         // CHAMA A FUNÇÃO QUE VALIDA O DATALIST
-                        this.verifyDataList(dataIn);
+                        this.verifyDataList(dataIn);                        
                     });
             });
         });
