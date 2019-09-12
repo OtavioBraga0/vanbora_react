@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, ScrollView, AsyncStorage } from "react-native";
+import { StyleSheet, View, Text, ScrollView, AsyncStorage, Button } from "react-native";
 import FirebaseService from "../../service/FirebaseService";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default class HomeAlunoScreen extends Component {
     state = {
@@ -55,6 +56,13 @@ export default class HomeAlunoScreen extends Component {
         });
     };
 
+    trocaPresenca(presenca, grupoId){
+        let alunoId = this.state.alunoId;
+        
+        FirebaseService.changeValues(`grupo/${grupoId}/usuario/${alunoId}`, {'presenca': presenca});
+        FirebaseService.changeValues(`usuario/${alunoId}/grupo/${grupoId}`, {'presenca': presenca});
+    }
+
     render() {
         const {dataList, alunoId} = this.state;
 
@@ -68,15 +76,20 @@ export default class HomeAlunoScreen extends Component {
                                 (item, index) => {
                                     return (
                                         <View style={[styles.margin10, styles.item]} key={index}>
-                                            <View style={{padding:10}}>
+                                            <View style={{padding: 10}}>
                                                 <Text style={styles.listItemHeader}> Nome </Text>
                                                 <Text style={styles.listItemText}> {item.nome} </Text>
 
-                                                <Text style={styles.listItemHeader}> Período </Text>
-                                                <Text style={styles.listItemText}> {item.periodo} </Text>
-
                                                 <Text style={styles.listItemHeader}> Presença </Text>
                                                 <Text style={styles.listItemText}> {item.usuario[alunoId].presenca} </Text>
+                                            </View>
+                                            <View style={styles.itemGrupo}>
+                                                <TouchableOpacity onPress={() => this.trocaPresenca('S', item.key)} style={item.usuario[alunoId].presenca == "S" ? styles.botaoAtivo : styles.botaoDesativo}>
+                                                    <Text style={styles.textoBotao}>VOU</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity onPress={() => this.trocaPresenca('N', item.key)} style={item.usuario[alunoId].presenca == "N" ? styles.botaoAtivo : styles.botaoDesativo}>
+                                                    <Text style={styles.textoBotao}>NÃO VOU</Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
                                     );
@@ -97,6 +110,9 @@ const styles = StyleSheet.create({
     header: {alignItems: 'flex-start', justifyContent: 'flex-start', height: 60, paddingTop: 20, paddingBottom: 20, flexDirection: 'row'},
     listItemText: {fontSize: 20, color: '#000000', marginBottom:10},
     listItemHeader: {fontSize: 10, color: '#000000'},
-    item: {backgroundColor: '#c7c7c7', borderRadius: 20}
-
+    item: {backgroundColor: '#c7c7c7', borderRadius: 20, display: "flex", flexDirection: "row", justifyContent: "space-around"},
+    itemGrupo: {display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around", flexGrow: .5},
+    botaoAtivo: {backgroundColor: "green"},
+    botaoDesativo: {backgroundColor: "red"},
+    textoBotao: {color: "white", padding: 20}
 });

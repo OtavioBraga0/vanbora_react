@@ -32,6 +32,10 @@ export default class FirebaseService{
         firebaseDatabase.ref(node).update({...obj})
     }
 
+    static changeValues(node, obj){
+        firebaseDatabase.ref(node).set(obj)
+    }
+
     static getDataList = (nodePath, callback) => {
         let query = firebaseDatabase.ref(nodePath);
         query.on('value', dataSnapshot => {
