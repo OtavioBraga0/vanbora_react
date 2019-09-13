@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, ScrollView, AsyncStorage, Button } from "react-native";
+import { StyleSheet, View, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
+import { FontAwesome } from '@expo/vector-icons';
 import FirebaseService from "../../service/FirebaseService";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default class HomeAlunoScreen extends Component {
     state = {
@@ -59,6 +59,7 @@ export default class HomeAlunoScreen extends Component {
     trocaPresenca(presenca, grupoId){
         let alunoId = this.state.alunoId;
         
+        // FUNÇÃO PARA ALTERAR VALORES DE UM DETERMINADO NÓ
         FirebaseService.changeValues(`grupo/${grupoId}/usuario/${alunoId}`, {'presenca': presenca});
         FirebaseService.changeValues(`usuario/${alunoId}/grupo/${grupoId}`, {'presenca': presenca});
     }
@@ -79,16 +80,13 @@ export default class HomeAlunoScreen extends Component {
                                             <View style={{padding: 10}}>
                                                 <Text style={styles.listItemHeader}> Nome </Text>
                                                 <Text style={styles.listItemText}> {item.nome} </Text>
-
-                                                <Text style={styles.listItemHeader}> Presença </Text>
-                                                <Text style={styles.listItemText}> {item.usuario[alunoId].presenca} </Text>
                                             </View>
                                             <View style={styles.itemGrupo}>
-                                                <TouchableOpacity onPress={() => this.trocaPresenca('S', item.key)} style={item.usuario[alunoId].presenca == "S" ? styles.botaoAtivo : styles.botaoDesativo}>
-                                                    <Text style={styles.textoBotao}>VOU</Text>
+                                                <TouchableOpacity onPress={() => this.trocaPresenca('S', item.key)} >
+                                                    <FontAwesome size={30} name="thumbs-up" color="green" style={item.usuario[alunoId].presenca == "S" ? null : styles.botaoDesativo}/>
                                                 </TouchableOpacity>
-                                                <TouchableOpacity onPress={() => this.trocaPresenca('N', item.key)} style={item.usuario[alunoId].presenca == "N" ? styles.botaoAtivo : styles.botaoDesativo}>
-                                                    <Text style={styles.textoBotao}>NÃO VOU</Text>
+                                                <TouchableOpacity onPress={() => this.trocaPresenca('N', item.key)}>
+                                                    <FontAwesome size={30} name="thumbs-down" color="red" style={item.usuario[alunoId].presenca == "N" ? null : styles.botaoDesativo}/>
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
@@ -112,7 +110,5 @@ const styles = StyleSheet.create({
     listItemHeader: {fontSize: 10, color: '#000000'},
     item: {backgroundColor: '#c7c7c7', borderRadius: 20, display: "flex", flexDirection: "row", justifyContent: "space-around"},
     itemGrupo: {display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around", flexGrow: .5},
-    botaoAtivo: {backgroundColor: "green"},
-    botaoDesativo: {backgroundColor: "red"},
-    textoBotao: {color: "white", padding: 20}
+    botaoDesativo: {opacity: 0.3},
 });

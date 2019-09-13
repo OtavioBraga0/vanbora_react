@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {StyleSheet, View, Text, ScrollView, Button } from "react-native";
 import FirebaseService from "../../service/FirebaseService";
-import { isUndefined } from "util";
+import { FontAwesome } from '@expo/vector-icons';
 
 export default class ListagemAlunosScreen extends Component {
     // INSTANCIA UM ATRIBUTO STATE COMO UM OBJETO COM O ITEM DATALIST
@@ -79,14 +79,20 @@ export default class ListagemAlunosScreen extends Component {
                             // PERCORRE TODO DATALIST COM OS DADOS ATUALIZADOS RENDERIZANDO-OS NA TELA
                             dataList && dataList.map(
                                 (item, index) => {
+                                    var presenca = "";
+                                    if(item.grupo[this.grupoId].presenca == "S"){
+                                        presenca = <FontAwesome size={30} name="thumbs-up" color="green"/>;
+                                    } else {
+                                        presenca = <FontAwesome size={30} name="thumbs-down" color="red"/>;
+                                    }
                                     return (
                                         <View style={[styles.margin10, styles.item]} key={index}>
                                             <View style={{padding:10}}>
                                                 <Text style={styles.listItemHeader}> Nome </Text>
                                                 <Text style={styles.listItemText}> {item.nome} </Text>
-
-                                                <Text style={styles.listItemHeader}> Presença </Text>
-                                                <Text style={styles.listItemText}> {item.grupo[this.grupoId].presenca} </Text>
+                                            </View>
+                                            <View style={styles.itemGrupo}>
+                                                {presenca}
                                             </View>
                                         </View>
                                     );
@@ -107,6 +113,6 @@ const styles = StyleSheet.create({
     header: {alignItems: 'flex-start', justifyContent: 'flex-start', height: 60, paddingTop: 20, paddingBottom: 20, flexDirection: 'row'},
     listItemText: {fontSize: 20, color: '#000000', marginBottom:10},
     listItemHeader: {fontSize: 10, color: '#000000'},
-    item: {backgroundColor: '#c7c7c7', borderRadius: 20}
-
+    item: {backgroundColor: '#c7c7c7', borderRadius: 20, display: "flex", flexDirection: "row", justifyContent: "space-around"},
+    itemGrupo: {display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around", flexGrow: .5},
 });

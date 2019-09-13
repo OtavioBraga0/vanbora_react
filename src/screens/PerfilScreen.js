@@ -1,48 +1,41 @@
 import React, { Component } from "react";
-import { StyleSheet, Button, Text, TextInput, View, Picker, AsyncStorage } from "react-native";
+import { StyleSheet, Button, Text, TextInput, View, AsyncStorage } from "react-native";
 import FirebaseService from "../../service/FirebaseService";
 
-export default class CadastroScreen extends Component { 
+export default class PerfilScreen extends Component { 
     static navigationOptions = {
-        title: 'Cadastro - Aluno',
+        title: 'Perfil',
     };
 
     state = {
         telefone: "",
     };
 
+    async componentDidMount(){
+        const key = await AsyncStorage.getItem("@Usuario:key");
+        FirebaseService.getDataWithKey("usuario",key, (dataIn) => this.setState(dataIn[0]));        
+    }
+
     render(){
-        const {telefone} = this.state;
+        const {key, nome, telefone, tipo, grupo = null} = this.state;
         const {goBack} = this.props.navigation;
 
 
         submit = async () => {
-            if (telefone == "") {
+            if (telefone == "" && nome == "") {
                 alert("Preencha todos os campos!");
             } else {
                 try {
-                    let grupoId = this.props.navigation.getParam("grupoId");
-                    FirebaseService.getDataWithChild("usuario", "telefone", telefone, dataIn => {
+                    let obj = {
+                        "nome": nome,
+                        "telefone": telefone,
+                        "tipo": tipo,
+                        "grupo": grupo,
+                    }
+                    FirebaseService.changeValues(`usuario/${key}`, obj)
 
-                        let objUsuario = {
-                            [grupoId]: {
-                                presenca: "S",                                
-                            }, 
-                        }
-
-                        let objGrupo = {
-                            [dataIn[0].key]: {
-                                presenca: "S",
-                            } 
-                        }
-
-                        FirebaseService.updateRelationship(`usuario/${dataIn[0].key}/grupo`, objUsuario)
-                        FirebaseService.updateRelationship(`grupo/${grupoId}/usuario`, objGrupo)
-
-                        alert("Aluno adicionado!");
-                        goBack();
-                    })
-
+                    alert("Perfil atualizado!")
+                    goBack();
                 } catch (error) {
                     alert("Erro de conexão")
                 }
@@ -50,7 +43,13 @@ export default class CadastroScreen extends Component {
         };
         return(
             <View style={{marginHorizontal: 15}}>
-                <Text>Telefone do Aluno</Text>
+                <Text>Nome</Text>
+                <TextInput
+                    style={styles.input}
+                    value={nome}
+                    required
+                    onChangeText={(value) => this.setState({nome: value})}/>
+                <Text>Telefone</Text>
                 <TextInput
                     style={styles.input}
                     value={telefone}

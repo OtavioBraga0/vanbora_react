@@ -1,14 +1,26 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Button, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
 import FirebaseService from "../../service/FirebaseService";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default class HomeMotoristaScreen extends Component {
     state = {
         dataList: null,
     };
 
-    static navigationOptions = {
-        title: 'Home - Motorista',
+    static navigationOptions = ({ navigation }) => {
+        perfil = () => {
+            navigation.navigate("Perfil")
+        }
+
+        return {
+            title: 'Home - Motorista',
+            headerRight: (
+                <TouchableOpacity onPress={() => perfil()} style={{marginRight: 30}}>
+                    <FontAwesome name="user" size={30}/>
+                </TouchableOpacity>
+            ),
+        };
     };
 
     async componentDidMount() {
@@ -61,6 +73,5 @@ const styles = StyleSheet.create({
     header: {alignItems: 'flex-start', justifyContent: 'flex-start', height: 60, paddingTop: 20, paddingBottom: 20, flexDirection: 'row'},
     listItemText: {fontSize: 20, color: '#000000', marginBottom:10},
     listItemHeader: {fontSize: 10, color: '#000000'},
-    item: {backgroundColor: '#c7c7c7', borderRadius: 20}
-
+    item: {backgroundColor: '#c7c7c7', borderRadius: 20},
 });
