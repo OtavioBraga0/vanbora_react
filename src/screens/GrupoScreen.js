@@ -57,6 +57,7 @@ const GrupoScreen = ({navigation}) => {
         });
     };
 
+    init();
     return(
         <View>
             <Button

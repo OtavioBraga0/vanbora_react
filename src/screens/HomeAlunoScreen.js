@@ -1,21 +1,20 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { StyleSheet, View, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
 import FirebaseService from "../../service/FirebaseService";
 
-export default class HomeAlunoScreen extends Component {
-    state = {
-        dataList: [],
-        alunoId: 0,
-    };
 
-    static navigationOptions = {
+const HomeAlunoScreen = () => {
+    const {dataList, setDataList} = useState([]);
+    const {alunoId, setAlunoId} = useState(0);
+
+    navigationOptions = {
         title: 'Home - Aluno',
     };
 
     // VALIDA DE O PASSAGEIRO JÁ EXISTE NA LISTAGEM, CASO EXISTA, SUBSTITUE OS DADOS ANTIGOS COM OS NOVOS 
-    verifyDataList(dataIn){        
-        let dataList = this.state.dataList;   
+    verifyDataList = (dataIn) => {        
+        let dataList = dataList;   
         let exist = 0;   
         if(dataIn.length != 0){
             dataList.forEach((element, index) => {      
@@ -31,17 +30,17 @@ export default class HomeAlunoScreen extends Component {
 
         if(exist == 0){
             dataList.push(dataIn[0]);
-            this.setState({dataList: dataList})
+            setDataList(dataList)
         } else {
-            this.setState({dataList: dataList})
+            setDataList(dataList)
         }
     }
 
-    async componentDidMount() {
+    const init = async () => {
         const key = await AsyncStorage.getItem("@Usuario:key");
-        this.setState({alunoId: key});
+        setAlunoId(key);
         // LISTA A KEY DE TODOS OS GRUPOS EM QUE O ALUNO ESTA
-        FirebaseService.getDataList(`usuario/${this.state.alunoId}/grupo` , dataIn => {
+        FirebaseService.getDataList(`usuario/${alunoId}/grupo` , dataIn => {
             // PERCORRE TODO O RETORNO DAS KEYs           
             dataIn.forEach(grupo => {                        
                 // RETORNA OS DADOS DOS GRUPOS BASEADOS NAS KEYs RECOLHIDAS ANTERIORMENTE
@@ -56,50 +55,47 @@ export default class HomeAlunoScreen extends Component {
         });
     };
 
-    trocaPresenca(presenca, grupoId){
-        let alunoId = this.state.alunoId;
+    const trocaPresenca = (presenca, grupoId) => {
+        let alunoId = alunoId;
         
         // FUNÇÃO PARA ALTERAR VALORES DE UM DETERMINADO NÓ
         FirebaseService.changeValues(`grupo/${grupoId}/usuario/${alunoId}`, {'presenca': presenca});
         FirebaseService.changeValues(`usuario/${alunoId}/grupo/${grupoId}`, {'presenca': presenca});
     }
-
-    render() {
-        const {dataList, alunoId} = this.state;
-
-        return(
-            <View>
-                <ScrollView>
-                    <View style={styles.fullWidth}>
-                        {
-                            // PERCORRE TODO DATALIST COM OS DADOS ATUALIZADOS RENDERIZANDO-OS NA TELA
-                            dataList && dataList.map(
-                                (item, index) => {
-                                    return (
-                                        <View style={[styles.margin10, styles.item]} key={index}>
-                                            <View style={{padding: 10}}>
-                                                <Text style={styles.listItemHeader}> Nome </Text>
-                                                <Text style={styles.listItemText}> {item.nome} </Text>
-                                            </View>
-                                            <View style={styles.itemGrupo}>
-                                                <TouchableOpacity onPress={() => this.trocaPresenca('S', item.key)} >
-                                                    <FontAwesome size={30} name="thumbs-up" color="green" style={item.usuario[alunoId].presenca == "S" ? null : styles.botaoDesativo}/>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity onPress={() => this.trocaPresenca('N', item.key)}>
-                                                    <FontAwesome size={30} name="thumbs-down" color="red" style={item.usuario[alunoId].presenca == "N" ? null : styles.botaoDesativo}/>
-                                                </TouchableOpacity>
-                                            </View>
+ 
+    init();
+    return(
+        <View>
+            <ScrollView>
+                <View style={styles.fullWidth}>
+                    {
+                        // PERCORRE TODO DATALIST COM OS DADOS ATUALIZADOS RENDERIZANDO-OS NA TELA
+                        dataList && dataList.map(
+                            (item, index) => {
+                                return (
+                                    <View style={[styles.margin10, styles.item]} key={index}>
+                                        <View style={{padding: 10}}>
+                                            <Text style={styles.listItemHeader}> Nome </Text>
+                                            <Text style={styles.listItemText}> {item.nome} </Text>
                                         </View>
-                                    );
-                                }
-                            )
-                        }
-    
-                    </View>
-                </ScrollView>
-            </View>
-        );
-    }
+                                        <View style={styles.itemGrupo}>
+                                            <TouchableOpacity onPress={() => trocaPresenca('S', item.key)} >
+                                                <FontAwesome size={30} name="thumbs-up" color="green" style={item.usuario[alunoId].presenca == "S" ? null : styles.botaoDesativo}/>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => trocaPresenca('N', item.key)}>
+                                                <FontAwesome size={30} name="thumbs-down" color="red" style={item.usuario[alunoId].presenca == "N" ? null : styles.botaoDesativo}/>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                );
+                            }
+                        )
+                    }
+
+                </View>
+            </ScrollView>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -112,3 +108,5 @@ const styles = StyleSheet.create({
     itemGrupo: {display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around", flexGrow: .5},
     botaoDesativo: {opacity: 0.3},
 });
+
+export default HomeAlunoScreen;
