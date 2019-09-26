@@ -1,14 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { StyleSheet, View, Button, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
 import FirebaseService from "../../service/FirebaseService";
 import { FontAwesome } from "@expo/vector-icons";
 
-export default class HomeMotoristaScreen extends Component {
-    state = {
-        dataList: null,
-    };
+const HomeMotoristaScreen = ({navigation}) => {
+    const {dataList, setDataList} = useState(null);
 
-    static navigationOptions = ({ navigation }) => {
+    navigationOptions = () => {
         perfil = () => {
             navigation.navigate("Perfil")
         }
@@ -23,48 +21,44 @@ export default class HomeMotoristaScreen extends Component {
         };
     };
 
-    async componentDidMount() {
+    const init = async () => {
         const key = await AsyncStorage.getItem("@Usuario:key");
-        FirebaseService.getDataWithChild('grupo', 'motoristaId', key, dataIn => this.setState({dataList: dataIn}));
+        FirebaseService.getDataWithChild('grupo', 'motoristaId', key, dataIn => setDataList(dataIn));
     };
 
-    render() {
-        const {dataList} = this.state;
-        const {navigate} = this.props.navigation;
+    init();
+    return(
+        <View>
+            <Button
+                title="Criar Grupo"
+                onPress={() => navigate("CadastroGrupo")}
+            />
+            <ScrollView>
+                <View style={styles.fullWidth}>
+                    {
+                        dataList && dataList.map(
+                            (item, index) => {
+                                return (
+                                    <View style={[styles.margin10, styles.item]} key={index}>
+                                        <TouchableOpacity onPress={() => navigate("Grupo", {grupoId: item.key})}>
+                                            <View style={{padding:10}}>
+                                                <Text style={styles.listItemHeader}> Nome </Text>
+                                                <Text style={styles.listItemText}> {item.nome} </Text>
 
-        return(
-            <View>
-                <Button
-                    title="Criar Grupo"
-                    onPress={() => navigate("CadastroGrupo")}
-                />
-                <ScrollView>
-                    <View style={styles.fullWidth}>
-                        {
-                            dataList && dataList.map(
-                                (item, index) => {
-                                    return (
-                                        <View style={[styles.margin10, styles.item]} key={index}>
-                                            <TouchableOpacity onPress={() => navigate("Grupo", {grupoId: item.key})}>
-                                                <View style={{padding:10}}>
-                                                    <Text style={styles.listItemHeader}> Nome </Text>
-                                                    <Text style={styles.listItemText}> {item.nome} </Text>
+                                                <Text style={styles.listItemHeader}> Período </Text>
+                                                <Text style={styles.listItemText}> {item.periodo} </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                );
+                            }
+                        )
+                    }
 
-                                                    <Text style={styles.listItemHeader}> Período </Text>
-                                                    <Text style={styles.listItemText}> {item.periodo} </Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        </View>
-                                    );
-                                }
-                            )
-                        }
-    
-                    </View>
-                </ScrollView>
-            </View>
-        );
-    }
+                </View>
+            </ScrollView>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -75,3 +69,5 @@ const styles = StyleSheet.create({
     listItemHeader: {fontSize: 10, color: '#000000'},
     item: {backgroundColor: '#c7c7c7', borderRadius: 20},
 });
+
+export default HomeMotoristaScreen;
