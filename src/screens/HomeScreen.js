@@ -1,6 +1,67 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ScrollView, StyleSheet, Text, View, Button, AsyncStorage} from 'react-native';
 import FirebaseService from "../../service/FirebaseService";
+
+const HomeScreen = ({navigation}) => {
+    const {dataList, setDataList} = useState();
+    
+    const debug = true;
+
+    const init = async () => {
+        const key = await AsyncStorage.getItem("@Usuario:key")
+              
+        if(!debug){
+            if (key !== null) {
+                FirebaseService.getDataWithKey('usuario', key, dataIn => {
+                    let nav = "Cadastro";
+
+                    if(dataIn.length != 0) {
+                        if (dataIn[0].tipo == 'aluno') {
+                            nav = "HomeAluno";
+                        } else if (dataIn[0].tipo == 'motorista') {                        
+                            nav = "HomeMotorista";                    
+                        }
+                    }
+
+                    navigation.replace(nav)        
+                });
+            } else {
+                await AsyncStorage.setItem("@Usuario:key", key);
+                navigation.replace("Cadastro");
+            } 
+        }       
+        
+    };
+    
+    loginDebug = async (key) => {
+        await AsyncStorage.setItem("@Usuario:key", key);
+        FirebaseService.getDataWithKey('usuario', key, dataIn => {
+            
+            if(dataIn.length != 0) {
+                if (dataIn[0].tipo == 'aluno') {
+                    nav = "HomeAluno";
+                } else if (dataIn[0].tipo == 'motorista') {                        
+                    nav = "HomeMotorista";                    
+                }
+            }
+
+            navigation.replace(nav)        
+        });
+    }
+
+    init();
+    return (
+        <View>
+            <ScrollView style={styles.margin10}>
+                <View style={styles.header}><Text>React-Native App</Text></View>
+                <Button title="Aluno DEBUG" onPress={() => loginDebug("-Lpewiw7I6Rn7czFHdER")} />
+                <Button title="Motorista DEBUG" onPress={() => loginDebug("-LpewcZqNmmYm1j2xbsi")} />                
+                <Button title="Cadastro DEBUG" onPress={() => navigation.navigate("Cadastro")} />
+            </ScrollView>
+        </View>
+    );
+}
+
 
 const styles = StyleSheet.create({
     margin10: {margin: 10},
@@ -19,66 +80,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default class HomeScreen extends React.Component{
-    state = {
-        dataList: null,
-    };
-
-    navigation = this.props.navigation;
-
-    async componentDidMount() {
-        const key = await AsyncStorage.getItem("@Usuario:key")
-              
-        if (key !== null) {
-            FirebaseService.getDataWithKey('usuario', key, dataIn => {
-                let nav = "Cadastro";
-                
-                if(dataIn.length != 0) {
-                    if (dataIn[0].tipo == 'aluno') {
-                        nav = "HomeAluno";
-                    } else if (dataIn[0].tipo == 'motorista') {                        
-                        nav = "HomeMotorista";                    
-                    }
-                }
-                
-                this.navigation.replace(nav)        
-            });
-        } else {
-            this.navigation.replace("Cadastro");
-        } 
-    };
-    render() {
-        const {dataList} = this.state;
-
-        return (
-            <View>
-                <ScrollView style={styles.margin10}>
-                    <View style={styles.header}><Text>React-Native App</Text></View>
-                    <View style={styles.fullWidth}>
-                        {
-                            dataList && dataList.map(
-                                (item, index) => {
-                                    return (
-                                        <View style={[styles.margin10, styles.item]} key={index} >
-                                            <View style={{padding:10}}>
-                                                <Text style={styles.listItemHeader}> Nome </Text>
-                                                <Text style={styles.listItemText}> {item.nome} </Text>
-                                                
-                                                <Text style={styles.listItemHeader}> Telefone </Text>
-                                                <Text style={styles.listItemText}> {item.telefone} </Text>
-                                                
-                                                <Text style={styles.listItemHeader}> Tipo </Text>
-                                                <Text style={styles.listItemText}> {item.tipo} </Text>
-                                            </View>
-                                        </View>
-                                    );
-                                }
-                            )
-                        }
-
-                    </View>
-                </ScrollView>
-            </View>
-        );
-    }
-}
+export default HomeScreen;
