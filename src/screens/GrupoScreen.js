@@ -1,25 +1,23 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import {StyleSheet, View, Text, ScrollView, Button } from "react-native";
 import FirebaseService from "../../service/FirebaseService";
 import { FontAwesome } from '@expo/vector-icons';
 
-export default class ListagemAlunosScreen extends Component {
+const GrupoScreen = ({navigation}) => {
     // INSTANCIA UM ATRIBUTO STATE COMO UM OBJETO COM O ITEM DATALIST
-    state = {
-        dataList: [],
-    }
+    const {dataList, setDataList} = useState([]);
 
     // this.props.navigation.getParam("grupoId") => É UMA VARIÁVEL PASSADA POR PARÂMETRO DA PÁGINA HOME
-    grupoId = this.props.navigation.getParam("grupoId");
+    grupoId = navigation.getParam("grupoId");
 
     // TROCA TÍTUTLO DO HEADER
-    static navigationOptions = {
+    navigationOptions = {
         title: "Grupo",
     };
 
     // VALIDA DE O PASSAGEIRO JÁ EXISTE NA LISTAGEM, CASO EXISTA, SUBSTITUE OS DADOS ANTIGOS COM OS NOVOS 
-    verifyDataList(dataIn){        
-        let dataList = this.state.dataList;   
+    verifyDataList = (dataIn) => {        
+        let dataList = dataList;   
         let exist = 0;   
         if(dataIn.length != 0){
             dataList.forEach((element, index) => {      
@@ -35,15 +33,14 @@ export default class ListagemAlunosScreen extends Component {
 
         if(exist == 0){
             dataList.push(dataIn[0]);
-            this.setState({dataList: dataList})
+            setDataList(dataList)
         } else {
-            this.setState({dataList: dataList})
+            setDataList(dataList)
         }
     }
 
-
     // FUNÇÃO CHAMADA NA INICIALIZAÇÃO DA PÁGINA 
-    componentDidMount() {
+    init = () => {
         // LISTA A KEY DE TODOS OS ALUNOS QUE ESTÁ NO GRUPO
         FirebaseService.getDataList(`grupo/${this.grupoId}/usuario` , dataIn => {
             // PERCORRE TODO O RETORNO DAS KEYs           
@@ -60,51 +57,44 @@ export default class ListagemAlunosScreen extends Component {
         });
     };
 
-    // RENDERIZA O LAYOUT DA PÁGINA
-    render(){
-        // INSTANCIA UMA CONSTANTE DATALIST COM OS DADOS DO ATRIBUTO STATE
-        const {dataList} = this.state;
-        // INTANCIA UMA CONSTANTE NAVIGATE COM OS DADOS DE NAVEGAÇÃO (ESSES DADOS SÃO PASSADOS POR PADRÃO DE PÁGINA PRA PÁGINA)
-        const {navigate} = this.props.navigation;
-        
-        return(
-            <View>
-                <Button
-                    title="Adicionar Aluno"
-                    onPress={() => navigate("CadastroAluno", {grupoId: this.props.navigation.getParam("grupoId")})}
-                />
-                <ScrollView>
-                    <View style={styles.fullWidth}>
-                        {
-                            // PERCORRE TODO DATALIST COM OS DADOS ATUALIZADOS RENDERIZANDO-OS NA TELA
-                            dataList && dataList.map(
-                                (item, index) => {
-                                    var presenca = "";
-                                    if(item.grupo[this.grupoId].presenca == "S"){
-                                        presenca = <FontAwesome size={30} name="thumbs-up" color="green"/>;
-                                    } else {
-                                        presenca = <FontAwesome size={30} name="thumbs-down" color="red"/>;
-                                    }
-                                    return (
-                                        <View style={[styles.margin10, styles.item]} key={index}>
-                                            <View style={{padding:10}}>
-                                                <Text style={styles.listItemHeader}> Nome </Text>
-                                                <Text style={styles.listItemText}> {item.nome} </Text>
-                                            </View>
-                                            <View style={styles.itemGrupo}>
-                                                {presenca}
-                                            </View>
-                                        </View>
-                                    );
+    init();
+    return(
+        <View>
+            <Button
+                title="Adicionar Aluno"
+                onPress={() => navigation.navigate("CadastroAluno", {grupoId: navigation.getParam("grupoId")})}
+            />
+            <ScrollView>
+                <View style={styles.fullWidth}>
+                    {
+                        // PERCORRE TODO DATALIST COM OS DADOS ATUALIZADOS RENDERIZANDO-OS NA TELA
+                        dataList && dataList.map(
+                            (item, index) => {
+                                var presenca = "";
+                                if(item.grupo[this.grupoId].presenca == "S"){
+                                    presenca = <FontAwesome size={30} name="thumbs-up" color="green"/>;
+                                } else {
+                                    presenca = <FontAwesome size={30} name="thumbs-down" color="red"/>;
                                 }
-                            )
-                        }
-                    </View>
-                </ScrollView>
-            </View>
-        );
+                                return (
+                                    <View style={[styles.margin10, styles.item]} key={index}>
+                                        <View style={{padding:10}}>
+                                            <Text style={styles.listItemHeader}> Nome </Text>
+                                            <Text style={styles.listItemText}> {item.nome} </Text>
+                                        </View>
+                                        <View style={styles.itemGrupo}>
+                                            {presenca}
+                                        </View>
+                                    </View>
+                                );
+                            }
+                        )
+                    }
+                </View>
+            </ScrollView>
+        </View>
+    );
 
-    }
 }
 
 const styles = StyleSheet.create({
@@ -116,3 +106,5 @@ const styles = StyleSheet.create({
     item: {backgroundColor: '#c7c7c7', borderRadius: 20, display: "flex", flexDirection: "row", justifyContent: "space-around"},
     itemGrupo: {display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around", flexGrow: .5},
 });
+
+export default GrupoScreen;
