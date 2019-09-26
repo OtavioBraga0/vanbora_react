@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {StyleSheet, View, Text, ScrollView, Button } from "react-native";
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 import { FontAwesome } from '@expo/vector-icons';
 
 const GrupoScreen = ({navigation}) => {

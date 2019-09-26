@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
 import { StyleSheet, View, Button, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 import { FontAwesome } from "@expo/vector-icons";
 
 const HomeMotoristaScreen = ({navigation}) => {
@@ -21,9 +21,9 @@ const HomeMotoristaScreen = ({navigation}) => {
         };
     };
 
-    const init = async () => {
+    init = async () => {
         const key = await AsyncStorage.getItem("@Usuario:key");
-        FirebaseService.getDataWithChild('grupo', 'motoristaId', key, dataIn => setDataList(dataIn));
+        FirebaseService.getDataWithChild('grupo', 'motoristaId', key, (dataIn) => {setDataList(dataIn)});
     };
 
     init();

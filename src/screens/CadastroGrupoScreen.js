@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Button, Text, TextInput, View, Picker, AsyncStorage } from "react-native";
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 
 const CadastroGrupoScreen = ({navigation}) => {
     const {nome, setNome} = useState("");

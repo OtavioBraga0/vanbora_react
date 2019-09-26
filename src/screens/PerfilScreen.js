@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Button, Text, TextInput, View, AsyncStorage } from "react-native";
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 
 const PerfilScreen = ({navigation}) => {
     const {key, setKey} = useState("");

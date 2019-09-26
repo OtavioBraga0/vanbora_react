@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Button, Text, TextInput, View } from "react-native";
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 
 const CadastroAlunoScreen = ({navigation}) => {
     const {telefone, setTelefone} = useState("");

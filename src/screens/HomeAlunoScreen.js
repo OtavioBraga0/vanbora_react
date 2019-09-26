@@ -1,12 +1,12 @@
 import React, { Component, useState } from "react";
 import { StyleSheet, View, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 
 
 const HomeAlunoScreen = () => {
     const {dataList, setDataList} = useState([]);
-    const {alunoId, setAlunoId} = useState(0);
+    const {alunoId, setAlunoId} = useState("");
 
     navigationOptions = {
         title: 'Home - Aluno',
