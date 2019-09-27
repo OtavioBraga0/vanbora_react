@@ -5,8 +5,8 @@ import FirebaseService from "../service/FirebaseService";
 
 
 const HomeAlunoScreen = () => {
-    const {dataList, setDataList} = useState([]);
-    const {alunoId, setAlunoId} = useState("");
+    const [dataList, setDataList] = useState([]);
+    const [alunoId, setAlunoId] = useState("");
 
     navigationOptions = {
         title: 'Home - Aluno',

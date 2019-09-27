@@ -3,8 +3,8 @@ import { StyleSheet, Button, Text, TextInput, View, Picker, AsyncStorage } from 
 import FirebaseService from "../service/FirebaseService";
 
 const CadastroGrupoScreen = ({navigation}) => {
-    const {nome, setNome} = useState("");
-    const {periodo, setPeriodo} = useState("matutino");
+    const [nome, setNome] = useState("");
+    const [periodo, setPeriodo] = useState("matutino");
 
     navigationOptions = {
         title: "Cadastro - Grupo"
@@ -45,7 +45,7 @@ const CadastroGrupoScreen = ({navigation}) => {
                 onValueChange={(itemValue, itemIndex) =>
                     setPeriodo(itemValue)
                 }>
-                <Picker.Item label="Motutino" value="matutino" />
+                <Picker.Item label="Matutino" value="matutino" />
                 <Picker.Item label="Vespertino" value="vespertino" />
                 <Picker.Item label="Noturno" value="noturno" />
             </Picker>

@@ -3,7 +3,7 @@ import {ScrollView, StyleSheet, Text, View, Button, AsyncStorage} from 'react-na
 import FirebaseService from "../service/FirebaseService";
 
 const HomeScreen = ({navigation}) => {
-    const {dataList, setDataList} = useState();
+    const [dataList, setDataList] = useState();
     
     const debug = true;
 
@@ -54,8 +54,8 @@ const HomeScreen = ({navigation}) => {
         <View>
             <ScrollView style={styles.margin10}>
                 <View style={styles.header}><Text>React-Native App</Text></View>
-                <Button title="Aluno DEBUG" onPress={() => loginDebug("-LpewcZqNmmYm1j2xbsi")} />
-                <Button title="Motorista DEBUG" onPress={() => loginDebug("-Lpewiw7I6Rn7czFHdER")} />                
+                <Button title="Motorista DEBUG" onPress={() => loginDebug("-LpewcZqNmmYm1j2xbsi")} />
+                <Button title="Aluno DEBUG" onPress={() => loginDebug("-Lpewiw7I6Rn7czFHdER")} />                
                 <Button title="Cadastro DEBUG" onPress={() => navigation.navigate("Cadastro")} />
             </ScrollView>
         </View>

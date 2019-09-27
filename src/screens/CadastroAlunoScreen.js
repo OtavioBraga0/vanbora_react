@@ -3,7 +3,7 @@ import { StyleSheet, Button, Text, TextInput, View } from "react-native";
 import FirebaseService from "../service/FirebaseService";
 
 const CadastroAlunoScreen = ({navigation}) => {
-    const {telefone, setTelefone} = useState("");
+    const [telefone, setTelefone] = useState("");
     navigationOptions = {
         title: "Cadastro - Aluno"
     };

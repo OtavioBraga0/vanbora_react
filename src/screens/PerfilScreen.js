@@ -3,11 +3,11 @@ import { StyleSheet, Button, Text, TextInput, View, AsyncStorage } from "react-n
 import FirebaseService from "../service/FirebaseService";
 
 const PerfilScreen = ({navigation}) => {
-    const {key, setKey} = useState("");
-    const {nome, setNome} = useState("");
-    const {telefone, setTelefone} = useState("");
-    const {tipo, setTipo} = useState("");
-    const {grupo, setGrupo} = useState(null);
+    const [key, setKey] = useState("");
+    const [nome, setNome] = useState("");
+    const [telefone, setTelefone] = useState("");
+    const [tipo, setTipo] = useState("");
+    const [grupo, setGrupo] = useState(null);
 
     navigationOptions = {
         title: 'Perfil',

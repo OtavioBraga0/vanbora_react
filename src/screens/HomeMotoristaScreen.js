@@ -1,12 +1,12 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Button, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
 import FirebaseService from "../service/FirebaseService";
 import { FontAwesome } from "@expo/vector-icons";
 
 const HomeMotoristaScreen = ({navigation}) => {
-    const {dataList, setDataList} = useState(null);
+    const [dataList, setDataList] = useState(null);
 
-    navigationOptions = () => {
+    HomeMotoristaScreen.navigationOptions = () => {
         perfil = () => {
             navigation.navigate("Perfil")
         }
@@ -23,7 +23,7 @@ const HomeMotoristaScreen = ({navigation}) => {
 
     init = async () => {
         const key = await AsyncStorage.getItem("@Usuario:key");
-        FirebaseService.getDataWithChild('grupo', 'motoristaId', key, (dataIn) => {setDataList(dataIn)});
+        FirebaseService.getDataWithChild('grupo', 'motoristaId', key, (dataIn) => setDataList(dataIn));
     };
 
     init();
@@ -31,7 +31,7 @@ const HomeMotoristaScreen = ({navigation}) => {
         <View>
             <Button
                 title="Criar Grupo"
-                onPress={() => navigate("CadastroGrupo")}
+                onPress={() => navigation.navigate("CadastroGrupo")}
             />
             <ScrollView>
                 <View style={styles.fullWidth}>
@@ -40,7 +40,7 @@ const HomeMotoristaScreen = ({navigation}) => {
                             (item, index) => {
                                 return (
                                     <View style={[styles.margin10, styles.item]} key={index}>
-                                        <TouchableOpacity onPress={() => navigate("Grupo", {grupoId: item.key})}>
+                                        <TouchableOpacity onPress={() => navigation.navigate("Grupo", {grupoId: item.key})}>
                                             <View style={{padding:10}}>
                                                 <Text style={styles.listItemHeader}> Nome </Text>
                                                 <Text style={styles.listItemText}> {item.nome} </Text>

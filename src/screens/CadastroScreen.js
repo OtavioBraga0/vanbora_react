@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Button, Text, TextInput, View, Picker, AsyncStorage } from "react-native";
 import FirebaseService from "../service/FirebaseService";
 
-const CadastroScreen = ({navigation}) => { 
+const CadastroScreen = ({ navigation }) => {
     const [nome, setNome] = useState("");
     const [telefone, setTelefone] = useState("");
     const [tipo, setTipo] = useState("aluno");
@@ -17,7 +17,7 @@ const CadastroScreen = ({navigation}) => {
                     telefone,
                     tipo
                 });
-                
+
                 await AsyncStorage.setItem("@Usuario:key", newid);
 
                 alert("Cadastro efetuado com sucesso!");
@@ -27,20 +27,20 @@ const CadastroScreen = ({navigation}) => {
             }
         }
     };
-    return(
-        <View style={{marginHorizontal: 15}}>
+    return (
+        <View style={{ marginHorizontal: 15 }}>
             <Text>Nome</Text>
             <TextInput
                 style={styles.input}
                 value={nome}
                 required
-                onChangeText={(value) => setNome(value)}/>
+                onChangeText={(value) => setNome(value)} />
             <Text>Telefone</Text>
             <TextInput
                 style={styles.input}
                 value={telefone}
                 required
-                onChangeText={(value) => setTelefone(value)}/>
+                onChangeText={(value) => setTelefone(value)} />
             <Text>Tipo</Text>
             <Picker
                 style={styles.input}
@@ -51,11 +51,11 @@ const CadastroScreen = ({navigation}) => {
                 <Picker.Item label="Aluno" value="aluno" />
                 <Picker.Item label="Motorista" value="motorista" />
             </Picker>
-            <Button 
+            <Button
                 type="button"
                 title="Cadastrar"
                 onPress={() => submit()}
-                style={{marginTop: '20px', display: 'inline-block'}} />
+                style={{ marginTop: '20px', display: 'inline-block' }} />
         </View>
     );
 }
