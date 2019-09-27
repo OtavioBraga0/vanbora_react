@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Button, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 import { FontAwesome } from "@expo/vector-icons";
 
 export default class HomeMotoristaScreen extends Component {

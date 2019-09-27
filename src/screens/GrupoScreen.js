@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {StyleSheet, View, Text, ScrollView, Button } from "react-native";
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 import { FontAwesome } from '@expo/vector-icons';
 
 export default class ListagemAlunosScreen extends Component {

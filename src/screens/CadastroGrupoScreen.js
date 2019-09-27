@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, Button, Text, TextInput, View, Picker, AsyncStorage } from "react-native";
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 
 export default class CadastroScreen extends Component { 
     static navigationOptions = {

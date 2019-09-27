@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
-import FirebaseService from "../../service/FirebaseService";
+import FirebaseService from "../service/FirebaseService";
 
 export default class HomeAlunoScreen extends Component {
     state = {
